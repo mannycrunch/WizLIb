@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizLib_DataAccess.Data;
 
 namespace WizLib_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210202035651_AddFluentBookDetailsToDb")]
+    partial class AddFluentBookDetailsToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,73 +115,7 @@ namespace WizLib_DataAccess.Migrations
 
                     b.HasKey("BookDetail_Id");
 
-                    b.ToTable("BookDetails");
-                });
-
-            modelBuilder.Entity("WizLib_Model.Models.Category", b =>
-                {
-                    b.Property<int>("Category_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CategoryName");
-
-                    b.HasKey("Category_Id");
-
-                    b.ToTable("tbl_category");
-                });
-
-            modelBuilder.Entity("WizLib_Model.Models.Fluent_Author", b =>
-                {
-                    b.Property<int>("Author_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Author_Id");
-
-                    b.ToTable("Fluent_Authors");
-                });
-
-            modelBuilder.Entity("WizLib_Model.Models.Fluent_Book", b =>
-                {
-                    b.Property<int>("Book_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("ISBN")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Book_Id");
-
-                    b.ToTable("Fluent_Books");
+                    b.ToTable("BookDetail");
                 });
 
             modelBuilder.Entity("WizLib_Model.Models.Fluent_BookDetail", b =>
@@ -201,26 +137,6 @@ namespace WizLib_DataAccess.Migrations
                     b.HasKey("BookDetail_Id");
 
                     b.ToTable("Fluent_BookDetails");
-                });
-
-            modelBuilder.Entity("WizLib_Model.Models.Fluent_Publisher", b =>
-                {
-                    b.Property<int>("Publisher_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Publisher_Id");
-
-                    b.ToTable("Fluent_Publishers");
                 });
 
             modelBuilder.Entity("WizLib_Model.Models.Genre", b =>
