@@ -9,7 +9,7 @@
         </div>
 
         <div class="col-3 text-right">
-            <a asp-action="Upsert" class="btn btn-info form-control"> Create New </a>
+            <a asp-action="AddEdit" class="btn btn-info form-control"> Create New </a>
         </div>
     </div>
     <div class="row">
@@ -44,7 +44,7 @@
                             @item.Name
                         </td>
                         <td>
-                            <a class="btn btn-primary text-white" asp-action="Upsert" asp-route-Id="@item.Category_Id">
+                            <a class="btn btn-primary text-white" asp-action="AddEdit" asp-route-Id="@item.Category_Id">
                                 Edit
                             </a>
 
