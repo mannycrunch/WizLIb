@@ -192,28 +192,40 @@ namespace WizLib.Controllers
 
             //var bookCount2 = _db.Books.Count();
 
-            //IEnumerable<Book> BookList1 = _db.Books;
-            //var filteredBook1 = BookList1.Where(b => b.Price > 500).ToList();
 
-            //IQueryable<Book> BookList2 = _db.Books;
-            //var filteredBook2 = BookList2.Where(b => b.Price > 500).ToList();
+            //Least Efficient as it return all books then filters in memory
+            IEnumerable<Book> BookList1 = _db.Books;
+            var filteredBook1 = BookList1.Where(b => b.Price > 500).ToList();
+
+            //More efficient, Filters when selecting from DB
+            IEnumerable<Book> BookList1b = _db.Books.Where(b => b.Price > 500).ToList();
+            //Even More Efficient, Filters when selecting from Db
+            IEnumerable<Book> BookList1c;
+            BookList1c = _db.Books.Where(b => b.Price > 500).ToList();
+
+            //More efficient, Filters when selecting from DB
+            IQueryable<Book> BookList2 = _db.Books;
+            var filteredBook2 = BookList2.Where(b => b.Price > 500).ToList();
+            //Even More Efficient, Filters when selecting from Db
+            List<Book> BookList2b = _db.Books.Where(b => b.Price > 500).ToList();
+
 
             //Manually chage entity state
             //var category = _db.Categories.FirstOrDefault();
             //_db.Entry(category).State = EntityState.Modified;
 
             //Updating Related Data
-            var BookTemp1 = _db.Books.Include(b => b.BookDetail).FirstOrDefault(b => b.BookDetail_Id == 2);
-            BookTemp1.BookDetail.NumberOfChapters = 2222;
-            //Update sets all to modified state which updates everything
-            _db.Books.Update(BookTemp1);
-            _db.SaveChanges();
+            //var BookTemp1 = _db.Books.Include(b => b.BookDetail).FirstOrDefault(b => b.BookDetail_Id == 2);
+            //BookTemp1.BookDetail.NumberOfChapters = 2222;
+            ////Update sets all to modified state which updates everything
+            //_db.Books.Update(BookTemp1);
+            //_db.SaveChanges();
 
-            var BookTemp2 = _db.Books.Include(b => b.BookDetail).FirstOrDefault(b => b.BookDetail_Id == 2);
-            BookTemp2.BookDetail.Weight = 3333;
-            //Attach switches to Add for new generated Ids & updates exiting, useful for mixed objects
-            _db.Books.Attach(BookTemp2);
-            _db.SaveChanges();
+            //var BookTemp2 = _db.Books.Include(b => b.BookDetail).FirstOrDefault(b => b.BookDetail_Id == 2);
+            //BookTemp2.BookDetail.Weight = 3333;
+            ////Attach switches to Add for new generated Ids & updates exiting, useful for mixed objects
+            //_db.Books.Attach(BookTemp2);
+            //_db.SaveChanges();
 
             return RedirectToAction(nameof(Index));
         }
