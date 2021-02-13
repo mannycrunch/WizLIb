@@ -21,14 +21,20 @@ namespace WizLib.Controllers
         }
         public IActionResult Index()
         {
-            List<Book> objList = _db.Books.Include(b => b.Publisher).ToList();
-            //foreach(var obj in objList)
+            List<Book> objList = _db.Books.Include(b => b.Publisher).Include(b => b.BookAuthors).ThenInclude(ba => ba.Author).ToList();
+            //List<Book> objList = _db.Books.ToList();
+            //foreach (var obj in objList)
             //{
             //    //Least Efficient
             //    //obj.Publisher = _db.Publishers.FirstOrDefault(p => p.Publisher_Id == obj.Publisher_Id);
 
             //    //Explicit Loading More Efficient
             //    _db.Entry(obj).Reference(b => b.Publisher).Load();
+            //    _db.Entry(obj).Collection(b => b.BookAuthors).Load();
+            //    foreach(var bookAuth in obj.BookAuthors)
+            //    {
+            //        _db.Entry(bookAuth).Reference(u => u.Author).Load();
+            //    }
             //}
             return View(objList);
         }
@@ -193,21 +199,21 @@ namespace WizLib.Controllers
             //var bookCount2 = _db.Books.Count();
 
 
-            //Least Efficient as it return all books then filters in memory
-            IEnumerable<Book> BookList1 = _db.Books;
-            var filteredBook1 = BookList1.Where(b => b.Price > 500).ToList();
+            ////Least Efficient as it return all books then filters in memory
+            //IEnumerable<Book> BookList1 = _db.Books;
+            //var filteredBook1 = BookList1.Where(b => b.Price > 500).ToList();
 
-            //More efficient, Filters when selecting from DB
-            IEnumerable<Book> BookList1b = _db.Books.Where(b => b.Price > 500).ToList();
-            //Even More Efficient, Filters when selecting from Db
-            IEnumerable<Book> BookList1c;
-            BookList1c = _db.Books.Where(b => b.Price > 500).ToList();
+            ////More efficient, Filters when selecting from DB
+            //IEnumerable<Book> BookList1b = _db.Books.Where(b => b.Price > 500).ToList();
+            ////Even More Efficient, Filters when selecting from Db
+            //IEnumerable<Book> BookList1c;
+            //BookList1c = _db.Books.Where(b => b.Price > 500).ToList();
 
-            //More efficient, Filters when selecting from DB
-            IQueryable<Book> BookList2 = _db.Books;
-            var filteredBook2 = BookList2.Where(b => b.Price > 500).ToList();
-            //Even More Efficient, Filters when selecting from Db
-            List<Book> BookList2b = _db.Books.Where(b => b.Price > 500).ToList();
+            ////More efficient, Filters when selecting from DB
+            //IQueryable<Book> BookList2 = _db.Books;
+            //var filteredBook2 = BookList2.Where(b => b.Price > 500).ToList();
+            ////Even More Efficient, Filters when selecting from Db
+            //List<Book> BookList2b = _db.Books.Where(b => b.Price > 500).ToList();
 
 
             //Manually chage entity state
@@ -226,6 +232,23 @@ namespace WizLib.Controllers
             ////Attach switches to Add for new generated Ids & updates exiting, useful for mixed objects
             //_db.Books.Attach(BookTemp2);
             //_db.SaveChanges();
+
+            //VIEWS
+            var viewList = _db.BookDetailsFromView.ToList();
+            var viewList1 = _db.BookDetailsFromView.FirstOrDefault();
+            var viewList2 = _db.BookDetailsFromView.Where(bd => bd.Price > 500);
+
+            //RAW SQL
+            var bookRaw = _db.Books.FromSqlRaw("Select * from dbo.books").ToList(); //Not to be used with parameters due to SQL Injection
+
+            int id = 2;
+            var bookTemp1 = _db.Books.FromSqlInterpolated($"Select * from dbo.books where Bood_Id={id}").ToList();
+
+            var booksSproc = _db.Books.FromSqlInterpolated($"EXEC dbo.getAllBookDetails {id}");
+
+            //.NET 5 only
+            var BookFilter1 = _db.Books.Include(b => b.BookAuthors.Where(ba => ba.Author_Id == 5)).ToList();
+            var BookFilter1 = _db.Books.Include(b => b.BookAuthors.OrderByDescending(ba => ba.Author_Id).Take(2)).ToList();
 
             return RedirectToAction(nameof(Index));
         }
